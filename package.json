@@ -1,14 +1,14 @@
 {
   "name": "zod-brasil",
-  "version": "1.1.0",
+  "version": "1.8.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "tsc"
   },
-  "keywords": [],
+  "keywords": ["zod", "typescript", "brasil"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "zod": "^3.24.1"
   },
