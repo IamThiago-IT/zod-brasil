@@ -5,54 +5,52 @@ const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
 const rgRegex = /^\d{2}\.\d{3}\.\d{3}-\d{1}$/; // Exemplo de RG
 
+const numerosRepetidosRegex = /^(\d)\1*$/;
+//apesar que a conta matematicamente dê certo, a Receita Federal 
+// não permite CPFs e CNPJs feita só com numeros repetidos
+
+
 // Funções de validação numérica para CPF/CNPJ
 const validarCpf = (cpf: string) => {
   const cpfLimpo = cpf.replace(/\D/g, ""); // Remove caracteres não numéricos
-  if (cpfLimpo.length !== 11) return false;
+  if (cpfLimpo.length !== 11 || numerosRepetidosRegex.test(cpfLimpo)) return false;
 
-  let soma = 0, resto;
-  for (let i = 1; i <= 9; i++) soma += parseInt(cpfLimpo[i - 1]) * (11 - i);
-  resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  if (resto !== parseInt(cpfLimpo[9])) return false;
+  for (let TamanhoParaValidar = 9; TamanhoParaValidar < 11; TamanhoParaValidar++){
+    let soma = 0;
+    let peso = TamanhoParaValidar + 1;
 
-  soma = 0;
-  for (let i = 1; i <= 10; i++) soma += parseInt(cpfLimpo[i - 1]) * (12 - i);
-  resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  return resto === parseInt(cpfLimpo[10]);
+    for (let i = 0; i < TamanhoParaValidar; i++) 
+      soma += parseInt(cpfLimpo[i]) * peso--;
+
+    // o if (resto === 10 || resto === 11) resto = 0; pode ser facilmente trocada pelo % 10
+    let resto = ((soma * 10) % 11) % 10;
+    if (resto !== parseInt(cpfLimpo[TamanhoParaValidar])) 
+      return false;
+  }
+  return true;
 };
+
+//as duas funções são bem parecidas mas não sei se compensa abstrair mais para
+//seguir de fato o método DRY kkk 
 
 const validarCnpj = (cnpj: string) => {
   const cnpjLimpo = cnpj.replace(/\D/g, ""); // Remove caracteres não numéricos
-  if (cnpjLimpo.length !== 14) return false;
+  if (cnpjLimpo.length !== 14 || numerosRepetidosRegex.test(cnpjLimpo)) return false;
 
-  let tamanho = cnpjLimpo.length - 2;
-  let numeros = cnpjLimpo.substring(0, tamanho);
-  let digitos = cnpjLimpo.substring(tamanho);
-  let soma = 0;
-  let pos = tamanho - 7;
-  
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros[tamanho - i]) * pos--;
-    if (pos < 2) pos = 9;
+  for (let TamanhoParaValidar = 12; TamanhoParaValidar < 14; TamanhoParaValidar++){
+    let soma = 0;
+    let peso = TamanhoParaValidar - 7
+
+    for (let i = 0; i < TamanhoParaValidar; i++) {
+      soma += parseInt(cnpjLimpo[i]) * peso--;
+      if (peso < 2) peso = 9;
+    }
+
+    let resto = ((soma * 10) % 11) % 10;
+    if (resto !== parseInt(cnpjLimpo[TamanhoParaValidar]))
+      return false;
   }
-
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  if (resultado !== parseInt(digitos[0])) return false;
-
-  tamanho = tamanho + 1;
-  numeros = cnpjLimpo.substring(0, tamanho);
-  soma = 0;
-  pos = tamanho - 7;
-
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros[tamanho - i]) * pos--;
-    if (pos < 2) pos = 9;
-  }
-
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  return resultado === parseInt(digitos[1]);
+  return true;
 };
 
 // Esquemas do Zod
