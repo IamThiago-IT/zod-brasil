@@ -6,7 +6,11 @@
   "scripts": {
     "build": "tsc"
   },
-  "keywords": ["zod", "typescript", "brasil"],
+  "keywords": [
+    "zod",
+    "typescript",
+    "brasil"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
