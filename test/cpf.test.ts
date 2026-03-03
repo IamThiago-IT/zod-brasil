@@ -4,13 +4,11 @@ import { cpfSchema, validarCpf } from "../src";
 describe("CPF", () => {
   describe("CPFs válidos", () => {
     const cpfsValidos = [
+      "529.982.247-25",
+      "123.456.789-09",
+      "52998224725",       // sem formatação
+      "12345678909",
       "806.462.500-94",
-      "327.627.370-20",
-      "545.586.560-90",
-      "80646250094",       // sem formatação
-      "32762737020",
-      "54558656090",
-      "191.382.640-92",
     ];
 
     it.each(cpfsValidos)("deve aceitar CPF válido: %s", (cpf) => {

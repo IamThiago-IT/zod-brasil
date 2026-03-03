@@ -6,7 +6,7 @@ describe("RENAVAM", () => {
     // Calculados manualmente com o algoritmo: pesos [3,2,9,8,7,6,5,4,3,2], dígito = ((soma*10)%11)%10
     const renavamsValidos = [
       "01234567897",  // dígito = 7
-      "00000000018",  // dígito = 8
+      "12345678900",  // dígito = 0
     ];
 
     it.each(renavamsValidos)("deve aceitar RENAVAM válido: %s", (r) => {

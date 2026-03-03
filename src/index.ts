@@ -237,7 +237,7 @@ export const placaVeiculoSchema = z.string().refine(validarPlaca, {
 
 export const validarRenavam = (renavam: string): boolean => {
   const renavamLimpo = soNumeros(renavam).padStart(11, "0");
-  if (renavamLimpo.length !== 11) return false;
+  if (renavamLimpo.length !== 11 || numerosRepetidosRegex.test(renavamLimpo)) return false;
 
   const pesos = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
   let soma = 0;
